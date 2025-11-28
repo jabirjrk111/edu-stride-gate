@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { toast } from "sonner";
-import { LogOut, Calendar, BookOpen, User } from "lucide-react";
+import { LogOut, Calendar, BookOpen, User, Shield } from "lucide-react";
 import AttendanceCard from "@/components/AttendanceCard";
 import StudyMaterialsList from "@/components/StudyMaterialsList";
+import { useAdminCheck } from "@/hooks/useAdminCheck";
 
 interface Profile {
   full_name: string;
@@ -19,6 +20,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const { isAdmin } = useAdminCheck();
 
   useEffect(() => {
     checkUser();
@@ -91,10 +93,18 @@ const Dashboard = () => {
                 <p className="text-sm text-muted-foreground">ID: {profile?.student_id}</p>
               </div>
             </div>
-            <Button onClick={handleLogout} variant="outline" size="sm">
-              <LogOut className="w-4 h-4 mr-2" />
-              Logout
-            </Button>
+            <div className="flex items-center gap-3">
+              {isAdmin && (
+                <Button onClick={() => navigate("/admin")} variant="secondary" size="sm">
+                  <Shield className="w-4 h-4 mr-2" />
+                  Admin
+                </Button>
+              )}
+              <Button onClick={handleLogout} variant="outline" size="sm">
+                <LogOut className="w-4 h-4 mr-2" />
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
       </header>
