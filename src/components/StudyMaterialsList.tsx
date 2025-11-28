@@ -3,7 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Download, FileText } from "lucide-react";
+import { BookOpen, Download, FileText, Eye } from "lucide-react";
+import { toast } from "sonner";
 import { format } from "date-fns";
 
 interface StudyMaterial {
@@ -100,15 +101,34 @@ const StudyMaterialsList = () => {
                     {format(new Date(material.uploaded_at), "MMM d, yyyy")}
                   </span>
                   {material.file_url && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => window.open(material.file_url!, "_blank")}
-                      className="gap-2"
-                    >
-                      <Download className="w-3 h-3" />
-                      Download
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="default"
+                        onClick={() => window.open(material.file_url!, "_blank")}
+                        className="gap-2"
+                      >
+                        <Eye className="w-3 h-3" />
+                        View
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          const link = document.createElement('a');
+                          link.href = material.file_url!;
+                          link.download = `${material.title}.pdf`;
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                          toast.success("Download started");
+                        }}
+                        className="gap-2"
+                      >
+                        <Download className="w-3 h-3" />
+                        Download
+                      </Button>
+                    </div>
                   )}
                 </div>
               </div>
